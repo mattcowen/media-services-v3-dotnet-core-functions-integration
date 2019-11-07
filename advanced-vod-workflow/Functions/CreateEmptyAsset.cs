@@ -12,9 +12,6 @@ Input:
 
         // [Required] The name of attached storage account where to create the asset
         "assetStorageAccount":  "storage01",
-
-        // The name of the container within the attached storage account where the asset will be created.
-        "assetStorageAccountVirtualFolder": "virtualFolder01"
     }
 Output:
     {
@@ -82,18 +79,9 @@ namespace advanced_vod_functions_v3
 
             assetStorageAccount = data.assetStorageAccount;
 
-            string assetStorageAccountVirtualFolder = null;
-
-            if (data.assetStorageAccountVirtualFolder != null)
-            {
-                assetStorageAccountVirtualFolder = data.assetStorageAccountVirtualFolder;
-            }
-
             Guid assetGuid = Guid.NewGuid();
 
             string assetName = data.assetNamePrefix + "-" + assetGuid.ToString();
-
-            string assetBlobLocation = assetStorageAccountVirtualFolder + "/" + assetName;
 
             MediaServicesConfigWrapper amsconfig = new MediaServicesConfigWrapper();
 
@@ -103,7 +91,7 @@ namespace advanced_vod_functions_v3
             {
                 IAzureMediaServicesClient client = MediaServicesHelper.CreateMediaServicesClientAsync(amsconfig);
 
-                Asset assetParams = new Asset(null, assetName, null, assetGuid, DateTime.Now, DateTime.Now, null, assetName, assetBlobLocation, assetStorageAccount, AssetStorageEncryptionFormat.None);
+                Asset assetParams = new Asset(null, assetName, null, assetGuid, DateTime.Now, DateTime.Now, null, assetName, null, assetStorageAccount, AssetStorageEncryptionFormat.None);
                 
                 asset = client.Assets.CreateOrUpdate(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, assetParams);
                 
@@ -122,7 +110,7 @@ namespace advanced_vod_functions_v3
 
             // compatible with AMS V2 API
             string assetId = "nb:cid:UUID:" + asset.AssetId;
-            string destinationContainer = assetBlobLocation + "-asset-" + asset.AssetId;
+            string destinationContainer = "-asset-" + asset.AssetId;
 
             return (ActionResult)new OkObjectResult(new
             {
