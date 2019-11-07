@@ -62,25 +62,46 @@ namespace advanced_vod_functions_v3
             log.LogInformation($"AMS v3 Function - CreateEmptyAsset was triggered!");
 
             string requestBody = new StreamReader(req.Body).ReadToEnd();
+
             dynamic data = JsonConvert.DeserializeObject(requestBody);
 
             if (data.assetNamePrefix == null)
-                return new BadRequestObjectResult("Please pass assetNamePrefix in the input object" );
+            {
+                return new BadRequestObjectResult("Please pass assetNamePrefix in the input object");
+            }
+
             string assetStorageAccount = null;
+
             if (data.assetStorageAccount != null)
+            {
                 assetStorageAccount = data.assetStorageAccount;
+            }
+
+            string assetStorageAccountContainer = null;
+
+            if (data.assetStorageAccountContainer == null)
+            {
+                return new BadRequestObjectResult("Please pass assetStorageAccountContainer in the input object");
+            }
+
+            assetStorageAccountContainer = data.assetStorageAccountContainer;
+
             Guid assetGuid = Guid.NewGuid();
+
             string assetName = data.assetNamePrefix + "-" + assetGuid.ToString();
 
             MediaServicesConfigWrapper amsconfig = new MediaServicesConfigWrapper();
+
             Asset asset = null;
 
             try
             {
                 IAzureMediaServicesClient client = MediaServicesHelper.CreateMediaServicesClientAsync(amsconfig);
 
-                Asset assetParams = new Asset(null, assetName, null, assetGuid, DateTime.Now, DateTime.Now, null, assetName, null, assetStorageAccount, AssetStorageEncryptionFormat.None);
+                Asset assetParams = new Asset(null, assetName, null, assetGuid, DateTime.Now, DateTime.Now, null, assetName, assetStorageAccountContainer, assetStorageAccount, AssetStorageEncryptionFormat.None);
+                
                 asset = client.Assets.CreateOrUpdate(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, assetParams);
+                
                 //asset = client.Assets.CreateOrUpdate(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, new Asset());
             }
             catch (ApiErrorException e)
@@ -96,7 +117,7 @@ namespace advanced_vod_functions_v3
 
             // compatible with AMS V2 API
             string assetId = "nb:cid:UUID:" + asset.AssetId;
-            string destinationContainer = "asset-" + asset.AssetId;
+            string destinationContainer = assetStorageAccountContainer + "-asset-" + asset.AssetId;
 
             return (ActionResult)new OkObjectResult(new
             {
