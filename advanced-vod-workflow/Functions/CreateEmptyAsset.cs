@@ -10,8 +10,13 @@ Input:
         // [Required] The name of the asset
         "assetNamePrefix": "TestAssetName",
 
-        // The name of attached storage account where to create the asset
-        "assetStorageAccount":  "storage01"
+        // [Required] The name of attached storage account where to create the asset
+        "assetStorageAccount":  "storage01",
+
+        // The name of the container within the attached storage account where the asset will be created.
+        "assetStorageAccountContainer": "container01"
+
+
     }
 Output:
     {
@@ -72,19 +77,19 @@ namespace advanced_vod_functions_v3
 
             string assetStorageAccount = null;
 
-            if (data.assetStorageAccount != null)
+            if (data.assetStorageAccount == null)
             {
-                assetStorageAccount = data.assetStorageAccount;
+                return new BadRequestObjectResult("Please pass assetStorageAccount in the input object");
             }
+
+            assetStorageAccount = data.assetStorageAccount;
 
             string assetStorageAccountContainer = null;
 
-            if (data.assetStorageAccountContainer == null)
+            if (data.assetStorageAccountContainer != null)
             {
-                return new BadRequestObjectResult("Please pass assetStorageAccountContainer in the input object");
+                assetStorageAccountContainer = data.assetStorageAccountContainer;
             }
-
-            assetStorageAccountContainer = data.assetStorageAccountContainer;
 
             Guid assetGuid = Guid.NewGuid();
 
