@@ -1,0 +1,6 @@
+{
+    "transformName": "TestTransform",
+    "mode": "simple",
+    "description": "Transform for testing",
+    "preset": "AdaptiveStreaming"
+}
