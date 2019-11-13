@@ -79,9 +79,13 @@ namespace advanced_vod_functions_v3
 
             assetStorageAccount = data.assetStorageAccount;
 
-            Guid assetGuid = Guid.NewGuid();
+            int guidDelimiter = data.assetNamePrefix.IndexOf('-');
+
+            string uniqueAssetNameGuid = data.assetNamePrefix.Substring(0, guidDelimiter);
 
             string assetName = "Input-" + data.assetNamePrefix;
+
+            Guid assetGuid = Guid.Parse(uniqueAssetNameGuid);
 
             MediaServicesConfigWrapper amsconfig = new MediaServicesConfigWrapper();
 
