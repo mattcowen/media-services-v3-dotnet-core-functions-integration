@@ -79,17 +79,15 @@ namespace advanced_vod_functions_v3
 
             assetStorageAccount = data.assetStorageAccount;
 
-            int guidDelimiter = data.assetNamePrefix.IndexOf('.');
+            string assetName = data.assetNamePrefix;
 
-            string uniqueAssetNameGuid = data.assetNamePrefix.Substring(0, guidDelimiter);
+            int guidDelimiter = assetName.IndexOf('.');
+
+            string uniqueAssetNameGuid = assetName.Substring(0, guidDelimiter);
 
             log.LogInformation(uniqueAssetNameGuid);
 
-            string assetName = "Input-" + data.assetNamePrefix;
-
-            //Guid assetGuid = Guid.Parse(uniqueAssetNameGuid);
-
-            //Guid tempAssetGuid = new Guid();
+            assetName = "Input-" + assetName;
 
             Guid assetGuid = Guid.Parse(uniqueAssetNameGuid);
 
