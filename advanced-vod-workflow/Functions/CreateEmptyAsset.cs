@@ -10,8 +10,8 @@ Input:
         // [Required] The name of the asset
         "assetNamePrefix": "TestAssetName",
 
-        // [Required] The name of attached storage account where to create the asset
-        "assetStorageAccount":  "storage01",
+        // The name of attached storage account where to create the asset
+        "assetStorageAccount":  "storage01"
     }
 Output:
     {
@@ -72,22 +72,14 @@ namespace advanced_vod_functions_v3
 
             string assetStorageAccount = null;
 
-            if (data.assetStorageAccount == null)
+            if (data.assetStorageAccount != null)
             {
-                return new BadRequestObjectResult("Please pass assetStorageAccount in the input object");
+                assetStorageAccount = data.assetStorageAccount;
             }
 
-            assetStorageAccount = data.assetStorageAccount;
+            Guid assetGuid = Guid.NewGuid();
 
             string assetName = data.assetNamePrefix;
-
-            int guidDelimiter = assetName.IndexOf('.');
-
-            string uniqueAssetNameGuid = assetName.Substring(0, guidDelimiter);
-
-            assetName = "Input-" + assetName;
-
-            Guid assetGuid = Guid.Parse(uniqueAssetNameGuid);
 
             MediaServicesConfigWrapper amsconfig = new MediaServicesConfigWrapper();
 
@@ -97,9 +89,10 @@ namespace advanced_vod_functions_v3
             {
                 IAzureMediaServicesClient client = MediaServicesHelper.CreateMediaServicesClientAsync(amsconfig);
 
-                Asset assetParams = new Asset(null, assetName, null, assetGuid, DateTime.Now, DateTime.Now, uniqueAssetNameGuid, assetName, null, assetStorageAccount, AssetStorageEncryptionFormat.None);
+                Asset assetParams = new Asset(null, assetName, null, assetGuid, DateTime.Now, DateTime.Now, null, assetName, null, assetStorageAccount, AssetStorageEncryptionFormat.None);
                 
-                asset = await client.Assets.CreateOrUpdateAsync(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, assetParams);
+                asset = client.Assets.CreateOrUpdate(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, assetParams);
+
             }
             catch (ApiErrorException e)
             {
@@ -112,11 +105,14 @@ namespace advanced_vod_functions_v3
                 return new BadRequestObjectResult("Error: " + e.Message);
             }
 
-            string destinationContainer = "Output" + asset.AlternateId;
+            // compatible with AMS V2 API
+            string assetId = "nb:cid:UUID:" + asset.AssetId;
+            string destinationContainer = "asset-" + asset.AssetId;
 
             return (ActionResult)new OkObjectResult(new
             {
                 assetName = assetName,
+                assetId = assetId,
                 destinationContainer = destinationContainer
             });
         }
