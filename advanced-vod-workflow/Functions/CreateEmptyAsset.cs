@@ -83,6 +83,8 @@ namespace advanced_vod_functions_v3
 
             string uniqueAssetNameGuid = data.assetNamePrefix.Substring(0, guidDelimiter);
 
+            log.LogInformation(uniqueAssetNameGuid);
+
             string assetName = "Input-" + data.assetNamePrefix;
 
             //Guid assetGuid = Guid.Parse(uniqueAssetNameGuid);
