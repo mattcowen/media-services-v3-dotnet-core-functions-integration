@@ -101,12 +101,6 @@ namespace advanced_vod_functions_v3
                 
                 asset = client.Assets.CreateOrUpdate(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, assetParams);
 
-                log.LogInformation(uniqueAssetNameGuid);
-                log.LogInformation("id:" + asset.Id);
-                log.LogInformation("alternate:" + asset.AlternateId);
-                log.LogInformation("assetId:" + asset.AssetId);
-
-
                 //asset = client.Assets.CreateOrUpdate(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, new Asset());
             }
             catch (ApiErrorException e)
@@ -121,13 +115,18 @@ namespace advanced_vod_functions_v3
             }
 
             // compatible with AMS V2 API
+            string assetIdAssetId = asset.AssetId.ToString();
+            string assetAlternateId = asset.AlternateId;
+            string assetDotId = asset.Id;
+
             string assetId = "nb:cid:UUID:" + asset.AssetId;
-
-
             string destinationContainer = "-asset-" + asset.AssetId;
 
             return (ActionResult)new OkObjectResult(new
             {
+                assetAssetId = assetIdAssetId,
+                assetAlternateId = assetAlternateId,
+                assetDotId = assetDotId,
                 assetName = assetName,
                 assetId = assetId,
                 destinationContainer = destinationContainer
