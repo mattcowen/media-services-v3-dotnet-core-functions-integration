@@ -97,11 +97,9 @@ namespace advanced_vod_functions_v3
             {
                 IAzureMediaServicesClient client = MediaServicesHelper.CreateMediaServicesClientAsync(amsconfig);
 
-                Asset assetParams = new Asset(null, assetName, null, assetGuid, DateTime.Now, DateTime.Now, null, assetName, null, assetStorageAccount, AssetStorageEncryptionFormat.None);
+                Asset assetParams = new Asset(null, assetName, null, assetGuid, DateTime.Now, DateTime.Now, uniqueAssetNameGuid, assetName, null, assetStorageAccount, AssetStorageEncryptionFormat.None);
                 
-                asset = client.Assets.CreateOrUpdate(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, assetParams);
-
-                //asset = client.Assets.CreateOrUpdate(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, new Asset());
+                asset = await client.Assets.CreateOrUpdateAsync(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, assetParams);
             }
             catch (ApiErrorException e)
             {
@@ -114,21 +112,11 @@ namespace advanced_vod_functions_v3
                 return new BadRequestObjectResult("Error: " + e.Message);
             }
 
-            // compatible with AMS V2 API
-            string assetIdAssetId = asset.AssetId.ToString();
-            string assetAlternateId = asset.AlternateId;
-            string assetDotId = asset.Id;
-
-            string assetId = "nb:cid:UUID:" + asset.AssetId;
-            string destinationContainer = "-asset-" + asset.AssetId;
+            string destinationContainer = "Output" + asset.AlternateId;
 
             return (ActionResult)new OkObjectResult(new
             {
-                assetAssetId = assetIdAssetId,
-                assetAlternateId = assetAlternateId,
-                assetDotId = assetDotId,
                 assetName = assetName,
-                assetId = assetId,
                 destinationContainer = destinationContainer
             });
         }
