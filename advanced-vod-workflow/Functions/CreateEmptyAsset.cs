@@ -85,13 +85,9 @@ namespace advanced_vod_functions_v3
 
             string uniqueAssetNameGuid = assetName.Substring(0, guidDelimiter);
 
-            log.LogInformation(uniqueAssetNameGuid);
-
             assetName = "Input-" + assetName;
 
             Guid assetGuid = Guid.Parse(uniqueAssetNameGuid);
-
-            log.LogInformation(assetGuid.ToString());
 
             MediaServicesConfigWrapper amsconfig = new MediaServicesConfigWrapper();
 
@@ -104,7 +100,13 @@ namespace advanced_vod_functions_v3
                 Asset assetParams = new Asset(null, assetName, null, assetGuid, DateTime.Now, DateTime.Now, null, assetName, null, assetStorageAccount, AssetStorageEncryptionFormat.None);
                 
                 asset = client.Assets.CreateOrUpdate(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, assetParams);
-                
+
+                log.LogInformation(uniqueAssetNameGuid);
+                log.LogInformation("id:" + asset.Id);
+                log.LogInformation("alternate:" + asset.AlternateId);
+                log.LogInformation("assetId:" + asset.AssetId);
+
+
                 //asset = client.Assets.CreateOrUpdate(amsconfig.ResourceGroup, amsconfig.AccountName, assetName, new Asset());
             }
             catch (ApiErrorException e)
