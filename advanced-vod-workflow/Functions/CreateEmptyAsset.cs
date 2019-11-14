@@ -91,6 +91,8 @@ namespace advanced_vod_functions_v3
 
             Guid assetGuid = Guid.Parse(uniqueAssetNameGuid);
 
+            log.LogInformation(assetGuid.ToString());
+
             MediaServicesConfigWrapper amsconfig = new MediaServicesConfigWrapper();
 
             Asset asset = null;
@@ -118,6 +120,8 @@ namespace advanced_vod_functions_v3
 
             // compatible with AMS V2 API
             string assetId = "nb:cid:UUID:" + asset.AssetId;
+
+
             string destinationContainer = "-asset-" + asset.AssetId;
 
             return (ActionResult)new OkObjectResult(new
