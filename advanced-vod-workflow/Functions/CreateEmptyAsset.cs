@@ -79,7 +79,7 @@ namespace advanced_vod_functions_v3
 
             Guid assetGuid = Guid.NewGuid();
 
-            string assetName = data.assetNamePrefix;
+            string assetName = "Input-" + data.assetNamePrefix;
 
             MediaServicesConfigWrapper amsconfig = new MediaServicesConfigWrapper();
 
