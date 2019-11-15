@@ -112,7 +112,7 @@ namespace advanced_vod_functions_v3
                 for (int i = 0; i < transform.Outputs.Count; i++)
                 {
                     Guid assetGuid = Guid.NewGuid();
-                    string outputAssetName = outputAssetNamePrefix + "-" + assetGuid.ToString();
+                    string outputAssetName = outputAssetNamePrefix;
                     Asset assetParams = new Asset(null, outputAssetName, null, assetGuid, DateTime.Now, DateTime.Now, null, outputAssetName, null, assetStorageAccount, AssetStorageEncryptionFormat.None);
                     Asset outputAsset = client.Assets.CreateOrUpdate(amsconfig.ResourceGroup, amsconfig.AccountName, outputAssetName, assetParams);
                     jobOutputList.Add(new JobOutputAsset(outputAssetName));
