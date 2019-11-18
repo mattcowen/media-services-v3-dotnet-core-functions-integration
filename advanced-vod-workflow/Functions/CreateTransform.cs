@@ -244,7 +244,7 @@ namespace advanced_vod_functions_v3
                                 {
                                     new PngImage(
                                         start:"1",
-                                        step: "PT05S",
+                                        step: "PT01S",
                                         range: "100%",
                                         layers: new PngLayer[]{
                                             new PngLayer(
