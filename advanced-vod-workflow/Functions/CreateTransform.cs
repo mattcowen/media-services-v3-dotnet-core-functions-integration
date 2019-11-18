@@ -224,7 +224,8 @@ namespace advanced_vod_functions_v3
                         {
                             preset = JsonConvert.DeserializeObject<StandardEncoderPreset>(data.customPresetJson.ToString(), jsonReaders);
                         }
-                        else {
+                        else
+                        {
                             if (!EncoderNamedPresetList.ContainsKey(presetName))
                                 return new BadRequestObjectResult("Preset not found");
                             preset = new BuiltInStandardEncoderPreset(EncoderNamedPresetList[presetName]);
@@ -236,12 +237,39 @@ namespace advanced_vod_functions_v3
                         if (data.relativePriority != null && PriorityList.ContainsKey(data.relativePriority))
                             relativePriority = PriorityList[data.relativePriority];
                         transformOutputs.Add(new TransformOutput(preset, onError, relativePriority));
+
+                        TransformOutput frame = new TransformOutput(
+                            new StandardEncoderPreset(
+                                codecs: new Codec[]
+                                {
+                                    new JpgImage(
+                                        start: "1",
+                                        step: "00:00:01",
+                                        layers: new JpgLayer[]{
+                                            new JpgLayer(
+                                                width: "100%",
+                                                height: "100%"
+                                            )
+                                        }
+
+                                    )
+                                },
+                                formats: new Format[]
+                                {
+                                    new JpgFormat(
+                                        filenamePattern: "Thumbnail-{Basename}-{Index}{Extension}"
+                                    )
+                                }
+                            )
+                        ); ;
+                        transformOutputs.Add(frame);
                         outputs = transformOutputs.ToArray();
                     }
                     else if (mode == "advanced")
                     {
                         List<TransformOutput> transformOutputList = JsonConvert.DeserializeObject<List<TransformOutput>>(data.transformOutputs.ToString(), jsonReaders);
                         outputs = transformOutputList.ToArray();
+
                     }
                     else
                     {
