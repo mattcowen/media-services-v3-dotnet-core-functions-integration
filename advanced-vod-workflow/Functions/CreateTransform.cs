@@ -242,12 +242,12 @@ namespace advanced_vod_functions_v3
                             new StandardEncoderPreset(
                                 codecs: new Codec[]
                                 {
-                                    new PngImage(
+                                    new JpgImage(
                                         start:"1",
                                         step: "PT01S",
                                         range: "100%",
-                                        layers: new PngLayer[]{
-                                            new PngLayer(
+                                        layers: new JpgLayer[]{
+                                            new JpgLayer(
                                                 width: "100%",
                                                 height: "100%"
                                             )
@@ -257,8 +257,8 @@ namespace advanced_vod_functions_v3
                                 },
                                 formats: new Format[]
                                 {
-                                    new PngFormat(
-                                        filenamePattern: "Thumbnail-{Basename}-{Index}{Extension}"
+                                    new JpgFormat(
+                                        filenamePattern: "{Basename}-{Index}{Extension}"
                                     )
                                 }
                             )
