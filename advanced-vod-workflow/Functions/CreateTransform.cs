@@ -199,21 +199,33 @@ namespace advanced_vod_functions_v3
                 // Assume that an existing Transform with the desired name
                 // also uses the same recipe or Preset for processing content.
                 Transform transform = client.Transforms.Get(amsconfig.ResourceGroup, amsconfig.AccountName, transformName);
+
                 if (transform == null)
                 {
                     TransformOutput[] outputs = null;
+
                     List<TransformOutput> transformOutputs = new List<TransformOutput>();
+
                     if (mode == "simple")
                     {
                         Preset preset = null;
+
                         string audioLanguage = null;
+
                         if (data.audioLanguage != null)
+                        {
                             audioLanguage = data.audioLanguage;
+                        }
+
                         if (presetName == "VideoAnalyzer")
                         {
                             bool insightEnabled = false;
+
                             if (data.insightsToExtract != null && InsightTypeList.ContainsKey(data.insightsToExtract))
+                            {
                                 insightEnabled = true;
+                            }
+
                             preset = new VideoAnalyzerPreset(audioLanguage, insightEnabled ? InsightTypeList[data.insightsToExtract] : null);
                         }
                         else if (presetName == "AudioAnalyzer")
@@ -227,15 +239,26 @@ namespace advanced_vod_functions_v3
                         else
                         {
                             if (!EncoderNamedPresetList.ContainsKey(presetName))
+                            {
                                 return new BadRequestObjectResult("Preset not found");
+                            }
+
                             preset = new BuiltInStandardEncoderPreset(EncoderNamedPresetList[presetName]);
                         }
                         OnErrorType onError = OnErrorType.StopProcessingJob;
+
                         if (data.onError != null && OnErrorTypeList.ContainsKey(data.onError))
+                        {
                             onError = OnErrorTypeList[data.onError];
+                        }
+
                         Priority relativePriority = Priority.Normal;
+
                         if (data.relativePriority != null && PriorityList.ContainsKey(data.relativePriority))
+                        {
                             relativePriority = PriorityList[data.relativePriority];
+                        }
+
                         transformOutputs.Add(new TransformOutput(preset, onError, relativePriority));
 
                         TransformOutput frame = new TransformOutput(
@@ -244,7 +267,7 @@ namespace advanced_vod_functions_v3
                                 {
                                     new JpgImage(
                                         start:"1",
-                                        step: "PT01S",
+                                        step: "PT02S",
                                         range: "100%",
                                         layers: new JpgLayer[]{
                                             new JpgLayer(
