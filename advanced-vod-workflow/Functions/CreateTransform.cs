@@ -267,7 +267,7 @@ namespace advanced_vod_functions_v3
                                 {
                                     new JpgImage(
                                         start:"1",
-                                        step: "PT02S",
+                                        step: "PT01S",
                                         range: "100%",
                                         layers: new JpgLayer[]{
                                             new JpgLayer(
