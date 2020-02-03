@@ -77,7 +77,7 @@ namespace advanced_vod_functions_v3
                 assetStorageAccount = data.assetStorageAccount;
             }
 
-            Guid assetGuid = Guid.NewGuid();
+            Guid assetGuid = Guid.Parse(data.assetNamePrefix);
 
             string assetName = "Input-" + data.assetNamePrefix;
 
